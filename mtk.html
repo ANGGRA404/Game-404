@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Game Matematika Eksponen</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: 'Poppins', sans-serif;
+    color: #f0f0f0;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  }
+  .container {
+    background: #2d2541cc;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    width: 360px;
+    text-align: center;
+  }
+  h1 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  .question {
+    font-size: 1.8rem;
+    margin: 1.8rem 0;
+    user-select: none;
+  }
+  .input-area {
+    margin-bottom: 1.5rem;
+  }
+  input[type="number"] {
+    padding: 0.7rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  button {
+    background: #7b83ff;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    user-select:none;
+  }
+  button:hover:not(:disabled) {
+    background: #5e65da;
+  }
+  button:disabled {
+    background: #4d4d7a;
+    cursor: default;
+  }
+  .info {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .timer {
+    font-weight: 600;
+    font-size: 1.3rem;
+  }
+  .scoreboard {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1.5rem;
+  }
+  .scoreboard div {
+    background: #433877dd;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    flex: 1;
+    margin: 0 5px;
+    user-select:none;
+  }
+  .scoreboard div span {
+    font-weight: 600;
+    font-size: 1.3rem;
+  }
+  .result-msg {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    min-height: 28px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Game matematika bilangan eksponen">
+    <h2>Game Bilangan Eksponen</h2><br><br>
+    <div class="timer" aria-live="polite">Waktu Tersisa: <span id="time">30</span> detik</div>
+    <div class="question" id="question" aria-live="polite" aria-atomic="true">
+      Memuat soal...
+    </div>
+    <div class="input-area">
+      <input type="number" id="answer" autocomplete="off" placeholder="Masukkan jawaban" aria-label="Input jawaban" />
+    </div>
+    <button id="submitBtn">Kirim Jawaban</button>
+    <div class="result-msg" id="resultMsg" aria-live="polite" aria-atomic="true"></div>
+    <div class="scoreboard" role="region" aria-label="Papan skor">
+      <div>Skor<br><span id="score">0</span></div>
+      <div>Benar<br><span id="correct">0</span></div>
+      <div>Salah<br><span id="wrong">0</span></div>
+    </div>
+  </div>
+  <script>
+    const waktuLimit = 30; // detik
+    let waktuTersisa = waktuLimit;
+    let intervalTimer = null;
+
+    let skor = 0;
+    let benar = 0;
+    let salah = 0;
+
+    const questionElem = document.getElementById('question');
+    const timeElem = document.getElementById('time');
+    const answerInput = document.getElementById('answer');
+    const submitBtn = document.getElementById('submitBtn');
+    const scoreElem = document.getElementById('score');
+    const correctElem = document.getElementById('correct');
+    const wrongElem = document.getElementById('wrong');
+    const resultMsg = document.getElementById('resultMsg');
+
+    let jawabanSekarang = null;
+
+    function buatSoal() {
+      const basis = Math.floor(Math.random() * 8) + 2; // 2 sampai 9
+      const eksponen = Math.floor(Math.random() * 5) + 1; // 1 sampai 5
+      jawabanSekarang = Math.pow(basis, eksponen);
+
+      questionElem.innerHTML = `Hasil dari <strong>${basis}<sup>${eksponen}</sup></strong>`;
+      answerInput.value = '';
+      answerInput.focus();
+      resultMsg.textContent = '';
+      waktuTersisa = waktuLimit;
+      timeElem.textContent = waktuTersisa;
+      submitBtn.disabled = false;
+    }
+
+    function updateTimer() {
+      waktuTersisa--;
+      timeElem.textContent = waktuTersisa;
+      if (waktuTersisa <= 0) {
+        akhiriSoal(false, "Waktunya habis!");
+      }
+    }
+
+    function akhiriSoal(hasilBenar, pesan) {
+      clearInterval(intervalTimer);
+      submitBtn.disabled = true;
+      if (hasilBenar) {
+        skor += 10;
+        benar++;
+        resultMsg.style.color = '#7fff7f';
+        resultMsg.textContent = 'Benar +10 poin';
+      } else {
+        salah++;
+        resultMsg.style.color = '#ff7575';
+        if (pesan) {
+          resultMsg.textContent = pesan;
+        } else {
+          resultMsg.textContent = 'Salah';
+        }
+      }
+      perbaruiSkor();
+
+      setTimeout(() => {
+        buatSoal();
+        intervalTimer = setInterval(updateTimer, 1000);
+      }, 1500);
+    }
+
+    function perbaruiSkor() {
+      scoreElem.textContent = skor;
+      correctElem.textContent = benar;
+      wrongElem.textContent = salah;
+    }
+
+    submitBtn.addEventListener('click', () => {
+      const jawabanUser = answerInput.value.trim();
+      if (jawabanUser === '') {
+        resultMsg.style.color = '#ffc107';
+        resultMsg.textContent = 'Silakan masukkan jawaban.';
+        return;
+      }
+      if (parseInt(jawabanUser) === jawabanSekarang) {
+        akhiriSoal(true);
+      } else {
+        akhiriSoal(false);
+      }
+    });
+
+    answerInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        submitBtn.click();
+      }
+    });
+
+    // Mulai permainan
+    buatSoal();
+    intervalTimer = setInterval(updateTimer, 1000);
+  </script>
+</body>
+</html>
+

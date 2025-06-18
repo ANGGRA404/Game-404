@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game Aljabar - Tebak Jawaban</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      color: #e0e7ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      user-select:none;
+    }
+    body {
+      padding: 20px;
+    }
+    #game-container {
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      max-width: 480px;
+      width: 100%;
+      border-radius: 16px;
+      padding: 24px 32px;
+      box-shadow:
+        0 0 20px #4338ca,
+        0 0 40px #2563eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    h1 {
+      font-weight: 900;
+      font-size: 2.5rem;
+      color: #e0e7ff;
+      text-shadow: 0 0 12px #a5b4fc;
+      user-select:none;
+    }
+    #status-panel {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #dbeafe;
+      text-shadow: 0 0 5px #a5b4fc;
+      user-select:none;
+    }
+    #status-panel div {
+      background: rgba(147 197 253 / 0.15);
+      padding: 8px 14px;
+      border-radius: 12px;
+      min-width: 100px;
+      text-align: center;
+      box-shadow:
+        inset 0 0 6px #60a5fa;
+    }
+
+    #question {
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: #bfdbfe;
+      text-shadow: 0 0 8px #2563eb;
+      user-select:none;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #answer-input {
+      width: 100%;
+      font-size: 1.4rem;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      box-shadow:
+        inset 0 0 15px #3b82f6;
+      background: #1e40af;
+      color: #e0e7ff;
+      text-align: center;
+      user-select:none;
+      outline-offset: 4px;
+      outline-color: #2563eb;
+      transition: outline-color 0.3s ease;
+    }
+    #answer-input:focus {
+      outline-color: #60a5fa;
+      box-shadow:
+        inset 0 0 24px #60a5fa;
+    }
+
+    #submit-btn {
+      margin-top: 12px;
+      background: #2563eb;
+      color: #e0e7ff;
+      font-weight: 700;
+      font-size: 1.3rem;
+      padding: 14px 0;
+      border: none;
+      border-radius: 14px;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 0 20px #60a5fa;
+      user-select:none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #submit-btn:hover, #submit-btn:focus {
+      background: #3b82f6;
+      box-shadow:
+        0 0 28px #93c5fd;
+      outline: none;
+    }
+    #feedback {
+      font-weight: 700;
+      font-size: 1.3rem;
+      min-height: 28px;
+      text-align: center;
+      user-select:none;
+      color: #e0e7ff;
+      text-shadow: 0 0 6px #a5b4fc;
+      transition: color 0.3s ease;
+    }
+    #feedback.correct {
+      color: #22c55e;
+      text-shadow: 0 0 8px #22c55e;
+    }
+    #feedback.wrong {
+      color: #ef4444;
+      text-shadow: 0 0 8px #ef4444;
+    }
+    #btn-restart {
+      margin-top: 8px;
+      background: #ea580c;
+      color: #fff;
+      padding: 12px 0;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 0 20px #f97316;
+      user-select:none;
+      display:none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #btn-restart:hover, #btn-restart:focus {
+      background: #fb923c;
+      box-shadow:
+        0 0 30px #facc15;
+      outline: none;
+    }
+
+    /* Responsive */
+    @media(max-width:480px) {
+      #game-container {
+        padding: 20px 20px 28px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      #question {
+        font-size: 1.5rem;
+        min-height: 48px;
+      }
+      #answer-input {
+        font-size: 1.2rem;
+        padding: 10px 16px;
+      }
+      #submit-btn, #btn-restart {
+        font-size: 1.1rem;
+        padding: 12px 0;
+      }
+    }
+
+stev {
+  background-color: dodgerblue; /* Warna latar belakang tombol */
+  color: white; /* Warna teks tombol */
+  padding: 8px 41px; /* Ukuran tombol */
+  border:2px solid deepskyblue; /* Batas tombol */
+  border-radius: 5px; /* Sudut tombol */
+  cursor: none; /* Gaya cursor saat diarahkan ke tombol */
+  margin-left: auto;
+  margin:6px;
+  font-family: Iceland;
+}
+
+.bol:hover {
+  background-color: #5B5B5B; /* Warna latar belakang tombol saat dihover */
+}
+
+.stev:hover {
+  background-color: skyblue; /* Warna latar belakang tombol saat dihover */
+}
+
+  </style>
+</head>
+<body>
+  <div id="game-container" role="main" aria-label="Game Aljabar Tebak Jawaban">
+    <h1>Game Aljabar</h1>
+    <div id="status-panel" aria-live="polite" aria-atomic="true">
+      <div id="score">Skor: 0</div>
+      <div id="timer">Waktu: 03:00</div>
+    </div>
+    <div id="question" aria-label="Soal aljabar">Memuat soal...</div>
+    <input id="answer-input" type="text" aria-label="Masukkan jawaban" autocomplete="off" inputmode="decimal" />
+    <button id="submit-btn" aria-label="Kirim jawaban">Kirim Jawaban</button>
+    <div id="feedback" aria-live="assertive"></div>
+    <button id="btn-restart" aria-label="Mulai ulang permainan">Main Lagi</button>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      // Elements
+      const scoreEl = document.getElementById('score');
+      const timerEl = document.getElementById('timer');
+      const questionEl = document.getElementById('question');
+      const answerInput = document.getElementById('answer-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const feedbackEl = document.getElementById('feedback');
+      const restartBtn = document.getElementById('btn-restart');
+
+      // Game state
+      let score = 0;
+      let timeRemaining = 180; // in seconds (3 minutes)
+      let timerId = null;
+      let currentAnswer = null;
+      let gameActive = false;
+
+      // Utility: format time mm:ss
+      const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+      };
+
+      // Generate random integer inclusive
+      const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+      // Generate a simple linear algebraic question: ax + b = c
+      // coefficients a, b, and c are integers; solution x is integer or simple decimal
+      function generateQuestion() {
+        // Pick a random integer solution x from -20 to 20 (excluding 0)
+        let x = 0;
+        while (x === 0) {
+          x = randInt(-20, 20);
+        }
+        // Pick a random a != 0 from -10 to 10 excluding 0
+        let a = 0;
+        while (a === 0) {
+          a = randInt(-10, 10);
+        }
+        // Pick b from -30 to 30
+        let b = randInt(-30, 30);
+        // Calculate c = ax + b
+        let c = a * x + b;
+
+        // Return question string and answer (x)
+        // Format: "ax + b = c" , handle signs properly
+        let aStr = (a === 1) ? '' : (a === -1) ? '-' : a.toString();
+        let bStr = '';
+        if (b > 0) bStr = '+ ' + b;
+        else if (b < 0) bStr = '- ' + Math.abs(b);
+
+        // Question text e.g. "3x + 5 = 20"
+        let question = `${aStr}x ${bStr} = ${c}`;
+
+        // Trim whitespace for better look
+        question = question.replace(/\s+/g, ' ').trim();
+
+        return {question, answer: x};
+      }
+
+      // Start game
+      function startGame() {
+        score = 0;
+        timeRemaining = 180;
+        gameActive = true;
+        updateScore();
+        resetInput();
+        feedbackEl.textContent = '';
+        updateTimerUI();
+        generateNewQuestion();
+        startTimer();
+        submitBtn.disabled = false;
+        answerInput.disabled = false;
+        restartBtn.style.display = 'none';
+        answerInput.focus();
+      }
+
+      // Update score display
+      function updateScore() {
+        scoreEl.textContent = `Skor: ${score}`;
+      }
+
+      // Update timer display
+      function updateTimerUI() {
+        timerEl.textContent = `Waktu: ${formatTime(timeRemaining)}`;
+      }
+
+      // Reset and clear answer input
+      function resetInput() {
+        answerInput.value = '';
+      }
+
+      // Generate new question & set current answer
+      function generateNewQuestion() {
+        const q = generateQuestion();
+        questionEl.textContent = q.question;
+        currentAnswer = q.answer;
+      }
+
+      // Timer countdown
+      function startTimer() {
+        timerId = setInterval(() => {
+          if (!gameActive) return;
+          timeRemaining--;
+          updateTimerUI();
+          if (timeRemaining <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      // Stop timer
+      function stopTimer() {
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+      }
+
+      // End game flow
+      function endGame() {
+        gameActive = false;
+        stopTimer();
+        feedbackEl.textContent = `Waktu habis! Skor akhir Anda: ${score}`;
+        feedbackEl.classList.remove('correct', 'wrong');
+        submitBtn.disabled = true;
+        answerInput.disabled = true;
+        restartBtn.style.display = 'block';
+        questionEl.textContent = 'Permainan selesai';
+      }
+
+      // Validate user's answer - accepts floating point with tolerance
+      function isCorrectAnswer(input, correct) {
+        // parse input
+        const val = parseFloat(input);
+        if (isNaN(val)) return false;
+        // Accept small tolerance for floating errors
+        return Math.abs(val - correct) < 0.001;
+      }
+
+      // Handle user submitting answer
+      function handleSubmit() {
+        if (!gameActive) return;
+        const userInput = answerInput.value.trim();
+        if (userInput.length === 0) {
+          feedbackEl.textContent = 'Masukkan jawaban terlebih dahulu!';
+          feedbackEl.classList.remove('correct');
+          feedbackEl.classList.add('wrong');
+          return;
+        }
+        const correct = isCorrectAnswer(userInput, currentAnswer);
+        if (correct) {
+          score += 1;
+          feedbackEl.textContent = 'Jawaban Benar!';
+          feedbackEl.classList.remove('wrong');
+          feedbackEl.classList.add('correct');
+          updateScore();
+          resetInput();
+          generateNewQuestion();
+        } else {
+          feedbackEl.textContent = `Salah! Jawaban benar: ${currentAnswer}`;
+          feedbackEl.classList.remove('correct');
+          feedbackEl.classList.add('wrong');
+          resetInput();
+          // Keep current question to retry or generate new question?
+          generateNewQuestion();
+        }
+        answerInput.focus();
+      }
+
+      // Event listeners
+      submitBtn.addEventListener('click', handleSubmit);
+
+      answerInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSubmit();
+        }
+      });
+
+      restartBtn.addEventListener('click', () => {
+        startGame();
+      });
+
+      // Start the game on load
+      window.onload = () => {
+        startGame();
+      };
+  })();
+  </script>
+</body>
+</html>
+

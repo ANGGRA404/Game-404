@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kuis Cyber Security</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Material+Icons"
+    rel="stylesheet"
+  />
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* BODY */
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #080808, #0f0f1a);
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 15, 26, 0.9);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      box-shadow:
+        0 0 12px rgba(99, 102, 241, 0.4),
+        0 0 32px rgba(99, 102, 241, 0.3);
+    }
+
+    header .score,
+    header .timer {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #6366f1; /* Indigo-500 */
+      text-shadow:
+        0 0 8px rgba(99, 102, 241, 0.8),
+        0 0 20px rgba(99, 102, 241, 0.6);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .material-icons.md-24 {
+      font-size: 24px;
+      color: #6366f1;
+      filter: drop-shadow(0 0 3px #6366f1);
+    }
+
+    /* MAIN GAME AREA */
+    main {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(20, 20, 34, 0.85);
+      border-radius: 16px;
+      box-shadow:
+        0 0 16px rgba(99, 102, 241, 0.5),
+        0 0 48px rgba(99, 102, 241, 0.4);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      min-height: 360px;
+      position: relative;
+    }
+
+    /* Question text */
+    #question {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: #a5b4fc; /* Indigo-300 */
+      text-shadow: 0 0 6px rgba(99, 102, 241, 0.7);
+      user-select: none;
+    }
+
+    /* Answers container */
+    #answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    button.answer-btn {
+      background: rgba(99, 102, 241, 0.15);
+      border: 2px solid #6366f1;
+      border-radius: 12px;
+      padding: 16px;
+      color: #e0e0e0;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      box-shadow:
+        0 0 10px transparent;
+    }
+
+    button.answer-btn:focus-visible {
+      outline: 3px solid #818cf8; /* Indigo-400 */
+      outline-offset: 2px;
+    }
+
+    button.answer-btn:hover {
+      background: rgba(99, 102, 241, 0.35);
+      box-shadow:
+        0 0 12px #6366f1;
+      transform: scale(1.03);
+    }
+
+    /* Correct / Wrong state */
+    button.answer-btn.correct {
+      background: #22c55e; /* Green-500 */
+      border-color: #22c55e;
+      box-shadow:
+        0 0 16px #22c55e;
+      color: #f0fdf4;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    button.answer-btn.wrong {
+      background: #ef4444; /* Red-500 */
+      border-color: #ef4444;
+      box-shadow:
+        0 0 16px #ef4444;
+      color: #fef2f2;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Disabled answers during feedback */
+    #answers.disabled button {
+      cursor: default;
+      opacity: 0.75;
+      pointer-events: none;
+      transform: none !important;
+    }
+
+    /* Result feedback text */
+    #feedback {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+      min-height: 32px;
+      color: #a5b4fc;
+      text-shadow: 0 0 8px rgba(99, 102, 241, 0.8);
+      user-select: none;
+    }
+
+    /* Sidebar collapsible for controls and info */
+    aside#sidebar {
+      max-width: 600px;
+      width: 100%;
+      margin-top: 24px;
+      background: rgba(15, 15, 26, 0.85);
+      border-radius: 12px;
+      box-shadow:
+        0 0 14px rgba(99, 102, 241, 0.4);
+      overflow: hidden;
+    }
+
+    #sidebar summary {
+      padding: 16px 24px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #818cf8; /* Indigo-400 */
+      user-select: none;
+      background: rgba(35, 35, 56, 0.85);
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
+      list-style: none;
+      outline-offset: 4px;
+    }
+
+    #sidebar[open] summary {
+      color: #6366f1;
+      box-shadow:
+        inset 0 -3px 0 #6366f1;
+    }
+
+    #sidebar div.content {
+      padding: 16px 24px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: #bec3fa;
+    }
+
+    /* Footer action buttons */
+    footer#controls {
+      width: 100%;
+      max-width: 600px;
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    button#next-question,
+    button#restart-game {
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+      border: none;
+      border-radius: 20px;
+      padding: 12px 28px;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 0 12px #6366f1;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      min-width: 140px;
+    }
+    button#next-question:hover,
+    button#restart-game:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #818cf8;
+    }
+    button#next-question:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #answers {
+        grid-template-columns: 1fr;
+      }
+      main {
+        padding: 24px 16px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="score" aria-live="polite" aria-atomic="true" aria-relevant="additions">
+      <span class="material-icons md-24">score</span> Skor: <span id="score">0</span>
+    </div>
+    <div class="timer" aria-live="polite" aria-atomic="true" aria-relevant="additions">
+      <span class="material-icons md-24">timer</span> Waktu: <span id="timer">30</span> detik
+    </div>
+  </header>
+
+  <main role="main" aria-label="Area permainan kuis">
+    <div id="question" aria-live="polite" aria-atomic="true"></div>
+    <div id="answers" role="list" aria-label="Pilihan jawaban"></div>
+    <div id="feedback" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <aside id="sidebar">
+    <summary tabindex="0" aria-expanded="false" aria-controls="sidebarContent" role="button">
+      Info Kontrol & Petunjuk
+    </summary>
+    <div id="sidebarContent" class="content" hidden>
+      <p>Jawab pertanyaan keamanan siber dengan benar.</p>
+      <p>Setiap soal memiliki batas waktu 30 detik.</p>
+      <p>Klik jawaban yang menurut Anda benar.</p>
+      <p>Skor bertambah untuk jawaban benar dan tidak berkurang untuk salah.</p>
+      <p>Skor akan tampil di atas.</p>
+      <p>Setelah menjawab, klik "Soal Berikutnya".</p>
+      <p>Jika waktu habis, soal dianggap salah otomatis.</p>
+    </div>
+  </aside>
+
+  <footer id="controls">
+    <button id="next-question" disabled>Soal Berikutnya</button>
+    <button id="restart-game" style="display:none;">Mulai Ulang</button>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+
+      // Data game state structure
+      const gameState = {
+        level: 1,
+        score: 0,
+        timer: 30,
+        isPaused: false,
+        isGameOver: false,
+        difficulty: 1,
+        allowAnswer: true,
+      };
+
+      // Question bank in Bahasa Indonesia about cyber security
+      const questions = [
+        {
+          question: "Apa itu phishing?",
+          answers: [
+            "Serangan mengelabui pengguna agar memberikan data pribadi",
+            "Program antivirus komputer",
+            "Sistem backup data",
+            "Firewall jaringan komputer"
+          ],
+          correctIndex: 0,
+          explanation: "Phishing adalah serangan yang mengelabui pengguna agar memberikan data pribadi seperti password."
+        },
+        {
+          question: "Apa yang dimaksud dengan firewall?",
+          answers: [
+            "Perangkat lunak keamanan yang memantau lalu lintas jaringan",
+            "Jenis virus komputer",
+            "Kode enkripsi data",
+            "Database cadangan"
+          ],
+          correctIndex: 0,
+          explanation: "Firewall adalah perangkat lunak atau perangkat keras yang memantau dan mengontrol lalu lintas jaringan."
+        },
+        {
+          question: "Apa itu malware?",
+          answers: [
+            "Perangkat lunak berbahaya yang merusak sistem komputer",
+            "Program optimasi kecepatan internet",
+            "Jenis perangkat keras",
+            "Jaringan komputer"
+          ],
+          correctIndex: 0,
+          explanation: "Malware adalah perangkat lunak berbahaya yang dirancang untuk merusak atau mengakses data tanpa izin."
+        },
+        {
+          question: "Untuk menjaga keamanan kata sandi, sebaiknya:",
+          answers: [
+            "Gunakan kata sandi unik dan kompleks untuk setiap akun",
+            "Gunakan kata sandi yang sama untuk semua akun",
+            "Gunakan nama sendiri sebagai kata sandi",
+            "Catat kata sandi dalam tulisan di dekat komputer"
+          ],
+          correctIndex: 0,
+          explanation: "Penting menggunakan kata sandi unik dan kompleks untuk setiap akun agar mengurangi risiko pembobolan."
+        },
+        {
+          question: "Apa itu autentikasi dua faktor (2FA)?",
+          answers: [
+            "Metode keamanan dengan dua lapis verifikasi identitas",
+            "Program penghapus virus otomatis",
+            "Software pemrograman",
+            "Firewall jaringan"
+          ],
+          correctIndex: 0,
+          explanation: "2FA menambahkan lapisan verifikasi kedua selain kata sandi untuk meningkatkan keamanan."
+        },
+      ];
+
+      // DOM refs
+      const questionEl = document.getElementById('question');
+      const answersEl = document.getElementById('answers');
+      const feedbackEl = document.getElementById('feedback');
+      const scoreEl = document.getElementById('score');
+      const timerEl = document.getElementById('timer');
+      const nextBtn = document.getElementById('next-question');
+      const restartBtn = document.getElementById('restart-game');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarSummary = sidebar.querySelector('summary');
+      const sidebarContent = document.getElementById('sidebarContent');
+
+      // Game variables
+      let currentQuestionIndex = 0;
+      let timerInterval = null;
+
+      // Show question and answers
+      function showQuestion(index) {
+        const q = questions[index];
+        questionEl.textContent = q.question;
+        answersEl.innerHTML = '';
+        feedbackEl.textContent = '';
+        answersEl.classList.remove('disabled');
+
+        q.answers.forEach((answerText, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'answer-btn';
+          btn.type = 'button';
+          btn.textContent = answerText;
+          btn.setAttribute('role', 'listitem');
+          btn.dataset.index = i;
+          btn.addEventListener('click', onAnswerClick);
+          answersEl.appendChild(btn);
+        });
+
+        nextBtn.disabled = true;
+        gameState.allowAnswer = true;
+        resetTimer();
+        startTimer();
+      }
+
+      // Reset and start timer
+      function resetTimer() {
+        gameState.timer = 30;
+        updateTimerDisplay();
+        if (timerInterval) clearInterval(timerInterval);
+      }
+
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          if (gameState.isPaused || gameState.isGameOver) return;
+
+          gameState.timer--;
+          updateTimerDisplay();
+
+          if (gameState.timer <= 0) {
+            clearInterval(timerInterval);
+            gameState.allowAnswer = false;
+            answersEl.classList.add('disabled');
+            feedbackEl.textContent = 'Waktu habis! Jawaban salah.';
+            markAnswers(false, null);
+            nextBtn.disabled = false;
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        timerEl.textContent = gameState.timer;
+      }
+
+      // Handle answer button click
+      function onAnswerClick(e) {
+        if (!gameState.allowAnswer) return;
+        gameState.allowAnswer = false;
+        clearInterval(timerInterval);
+        answersEl.classList.add('disabled');
+
+        const chosenIndex = Number(e.currentTarget.dataset.index);
+        const correctIndex = questions[currentQuestionIndex].correctIndex;
+
+        // Mark correct and wrong answers visually
+        markAnswers(true, chosenIndex === correctIndex ? chosenIndex : null);
+
+        if (chosenIndex === correctIndex) {
+          gameState.score += 10;
+          feedbackEl.textContent = "Jawaban benar! +10 poin.";
+          scoreEl.textContent = gameState.score;
+          playSound('correct');
+        } else {
+          feedbackEl.textContent = "Jawaban salah! " + questions[currentQuestionIndex].explanation;
+          playSound('wrong');
+        }
+        nextBtn.disabled = false;
+      }
+
+      // Mark answers with correct/wrong styles
+      function markAnswers(showCorrect, userCorrectIndex) {
+        const buttons = answersEl.querySelectorAll('button.answer-btn');
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          if (showCorrect) {
+            if (i === questions[currentQuestionIndex].correctIndex) {
+              btn.classList.add('correct');
+            }
+            if (userCorrectIndex !== null && i === userCorrectIndex && i !== questions[currentQuestionIndex].correctIndex) {
+              btn.classList.add('wrong');
+            }
+          }
+        });
+      }
+
+      // Move to next question or end game if finished
+      function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= questions.length) {
+          endGame();
+        } else {
+          showQuestion(currentQuestionIndex);
+        }
+      }
+
+      // End game logic
+      function endGame() {
+        gameState.isGameOver = true;
+        questionEl.textContent = "Permainan selesai! Skor akhir Anda: " + gameState.score;
+        answersEl.innerHTML = '';
+        feedbackEl.textContent = '';
+        nextBtn.style.display = 'none';
+        restartBtn.style.display = 'inline-block';
+        timerEl.textContent = '0';
+      }
+
+      // Restart game
+      function restartGame() {
+        currentQuestionIndex = 0;
+        gameState.score = 0;
+        gameState.isGameOver = false;
+        scoreEl.textContent = '0';
+        nextBtn.style.display = 'inline-block';
+        restartBtn.style.display = 'none';
+        showQuestion(currentQuestionIndex);
+      }
+
+      // Sound feedbacks
+      function playSound(type) {
+        if (type === 'correct') {
+          const audioCtx = new AudioContext();
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'triangle';
+          o.frequency.setValueAtTime(600, audioCtx.currentTime);
+          g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          o.connect(g).connect(audioCtx.destination);
+          o.start();
+          o.stop(audioCtx.currentTime + 0.15);
+        } else if (type === 'wrong') {
+          const audioCtx = new AudioContext();
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'square';
+          o.frequency.setValueAtTime(300, audioCtx.currentTime);
+          g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          o.connect(g).connect(audioCtx.destination);
+          o.start();
+          o.stop(audioCtx.currentTime + 0.25);
+        }
+      }
+
+      // Sidebar accessible toggle handling
+      sidebarSummary.addEventListener('click', () => {
+        const expanded = sidebar.getAttribute('open') !== null;
+        if (expanded) {
+          sidebar.removeAttribute('open');
+          sidebarSummary.setAttribute('aria-expanded', 'false');
+          sidebarContent.hidden = true;
+        } else {
+          sidebar.setAttribute('open', '');
+          sidebarSummary.setAttribute('aria-expanded', 'true');
+          sidebarContent.hidden = false;
+        }
+      });
+      sidebarSummary.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          sidebarSummary.click();
+        }
+      });
+
+      // Event listeners
+      nextBtn.addEventListener('click', nextQuestion);
+      restartBtn.addEventListener('click', restartGame);
+
+      // Start initial game
+      restartGame();
+
+    })();
+  </script>
+</body>
+</html>
+

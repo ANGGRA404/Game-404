@@ -1,0 +1,174 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Game Edukasi
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+  </style>
+ </head>
+ <body class="bg-white font-sans">
+ <style>
+     .navbar {
+     position: fixed;
+     top: 0;
+     left: -250px;
+     width: 250px;
+     height: 100vh;
+     background-color: white;
+     padding: 20px;
+     transition: left 00.5s;
+    }
+    
+    .navbar ul {
+     list-style: none;
+     margin: 0;
+     padding: 0;
+    }
+    
+    .navbar li {
+     margin-bottom: 20px;
+    }
+    
+    .navbar a {
+     color: black;
+     text-decoration: none;
+    }
+    
+    .menu-toggle {
+     position: absolute;
+     top: 25px;
+     left: 30px;
+     background-color: white;
+     color: dodgerblue;
+     border: none;
+     padding: 10px;
+     cursor: pointer;
+    }
+    
+    .close-btn {
+     position: absolute;
+     top: 5px;
+     right: 185px;
+     background-color: red;
+     color: #fff;
+     border: none;
+     padding: 10px;
+     cursor: pointer;
+    }
+    
+    .navbar.show {
+     left: 0;
+    }
+ </style>
+  
+  
+  <header class="bg-[#1E90FF] flex items-center justify-between px-4 py-3">
+   <div class="flex items-center space-x-3">
+    <img alt="School logo with blue and orange geometric shapes on white background" class="w-10 h-10 rounded-full border-2 border-white" height="40" src="/pb.jpg" width="40"/>
+    <h1 class="text-white font-mono text-lg tracking-widest">
+     SMK PUJA BANGSA
+    </h1>
+   </div>
+   <button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle">
+    Menu
+   </button>
+   <nav id="navbar" class="navbar">
+   <ul>
+    <br><br><br>
+   <font Color="black" size="5"><b>MY PANEL MENU</b></font>
+    <br><br><br>
+   <button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle" onclick="alert('Update Belum Tersedia Di Versi Ini')">
+    Update 
+   </button><br><br>
+   <a href="https://wa.me/6283871398679?text=Halo!%20Saya%20dari%20project%20game%20anda%20,saya%20ingin%20melaporkan%20Bug%20di%20dalam%20game%20anda"><button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle" >
+    Repot..
+   </button></a><br><br>
+   
+  <button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle" onclick="alert('game ini sudah di update ke versi  2.0.0                                               support semua android')">
+    About .
+   </button><br><br><br><br>
+   
+   <button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle" onclick="alert('DEVELOPER BY GRAXPLOID / M ANGGRA')">
+    Devoloper
+   </button><br><br>
+   
+   <button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle" onclick="alert('| KELOMPOK 1 |   | X TKJ |   | PUJA BANGSA |')">
+ My Team. 
+</button><br><br>
+
+    <button class="bg-[#1EB8FF] text-white font-sans text-base px-4 py-2 rounded-sm" type="button" id="menu-toggle" onclick="alert('game ini bertujuan untuk mengedukasi anak - anak karna game ini bisa untuk mengasah otak anak - anak dan belajar berpikir untuk menyelesaikan beberapa masalah atau tantangan contoh nya soal di dalam di game ini')">
+ Informasi. 
+</button><br><br>  
+   
+   <button id="close-btn" class="close-btn">Close</button>
+  </nav>
+  </header>
+  <main class="px-6 mt-10 max-w-md mx-auto">
+   <h2 class="text-[#1EB8FF] font-bold text-3xl text-center font-sans mb-8">
+    GAME EDUKASI
+   </h2>
+   <p class="text-[#1EB8FF] text-lg font-sans mb-1 flex  space-x-2">
+    <span>
+     ⛔
+    </span>
+    <span>
+     DISKLIMER
+    </span>
+    <span>
+     ⛔
+    </span>
+   </p>
+   <p class="text-[black] text-sm font-sans mb-10  leading-tight">
+    Game Ini Buatan Karya Dari Kelas x Tkj Dilarang Mengcoppy Source Code Tanpa Izin Dari Devoloper Game. Selamat Menikmati Game Karya X Tkj
+   </p>
+   <div class="grid grid-cols-3 gap-6 text-center">
+    <div>
+     <img alt="Four colorful math symbols icons in blue and yellow squares" class="w-24 h-24 mx-auto rounded-lg border-2 border-[#0000CD]" height="100" src="/MTK.png" width="100"/>
+        <button class="w-full mt-3 border-2 border-[#1EB8FF] text-black py-2 rounded" type="button">
+      MTK
+     </button></a>
+     <a href="/mtk.html"><button class="w-full mt-3 bg-[#1E90FF] text-white py-2 rounded" type="button">
+      play
+     </button></a>
+    </div>
+    <div>
+     <img alt="Blue stopwatch with a yellow lightbulb and red buttons icon" class="w-24 h-24 mx-auto rounded-lg border-2 border-[#0000CD]" height="100" src="/Quiz.png" width="100"/>
+        <button class="w-full mt-3 border-2 border-[#1EB8FF] text-black py-2 rounded" type="button">
+      QUIZ
+     </button></a>
+     <a href="/Quiz.html"><button class="w-full mt-3 bg-[#1E90FF] text-white py-2 rounded" type="button">
+      play
+     </button></a>
+    </div>
+    <div>
+     <img alt="Hand-drawn math formulas and geometric shapes on white background" class="w-24 h-24 mx-auto rounded-lg border-2 border-[#0000CD]" height="100" src="/ALJABAR.png" width="100"/>
+     <button class="w-full mt-3 border-2 border-[#1EB8FF] text-black py-2 rounded" type="button">
+      MTK
+     </button>
+    <a href="/aljabar.html"><button class="w-full mt-3 bg-[#1E90FF] text-white py-2 rounded" type="button">
+      play . .
+     </button></a>
+    </div>
+   </div>
+  </main>
+ </body>
+<script>
+const menuToggle = document.getElementById('menu-toggle');
+    const navbar = document.getElementById('navbar');
+    const closeBtn = document.getElementById('close-btn');
+
+    menuToggle.addEventListener('click', () => {
+      navbar.classList.add('show');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      navbar.classList.remove('show');
+    });
+</script>
+</html>
